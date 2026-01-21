@@ -1,0 +1,193 @@
+# Smart Contract Audit Report
+
+**Date:** {{DATE}}  
+**Target Protocol / Contracts:** {{TARGET_NAME}}  
+**Protocol Type:** {{PROTOCOL_TYPE}} (DEX/AMM | Lending | Vault | Router | Staking)  
+**Auditor:** {{AUDITOR_NAME}}
+
+## Audit Phase Status
+
+- [ ] Phase 0: Architecture & Protocol Classification
+- [ ] Phase 1: Automated Security Scan
+- [ ] Phase 2: Manual Vulnerability Discovery
+- [ ] Phase 3: Defense & Verification
+
+---
+
+## 📊 Executive Summary
+
+**Risk Level:** 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low
+
+| Category | Count |
+|----------|-------|
+| Critical | 0 |
+| High | 0 |
+| Medium | 0 |
+| Low | 0 |
+| Informational | 0 |
+
+**Key Findings:**
+> [1-2 sentence summary of the most important findings]
+
+---
+
+## 🏛️ Phase 0: System Architecture & Documentation
+
+### Protocol Classification
+- **Type:** [DEX/AMM | Lending | Vault | Stablecoin/PSM | Bridge/Router | Staking]
+- **Key Contracts:** 
+  - `Contract1.sol` - [Description]
+  - `Contract2.sol` - [Description]
+
+### Money Flow
+*Trace how assets enter, move, and exit.*
+```
+User → deposit() → Pool → swap() → User
+```
+
+### Roles & Permissions
+| Role | Address/Contract | Permissions |
+|------|-----------------|-------------|
+| Owner | `0x...` | Full admin, can pause, upgrade |
+| Admin | `0x...` | Can add pools, change fees |
+
+### External Integrations
+- **Oracles:** [Chainlink / TWAP / Spot]
+- **Routers:** [Uniswap V2, V3, Curve]
+- **Other:** [List external dependencies]
+
+### Documentation vs Code Discrepancies
+- [ ] **Confirmed Match** - Documentation accurately reflects implementation
+- [ ] **N/A** - No meaningful documentation provided
+- [ ] **Mismatch Found**: [Describe the discrepancy]
+
+---
+
+## 🔧 Phase 1: Automated Security Scan
+
+### Pre-Audit Checklist
+- [ ] Code compiles without warnings
+- [ ] Tests pass with good coverage
+- [ ] No critical Slither findings unaddressed
+- [ ] Dependencies reviewed
+
+### Slither Results
+
+| Detector | Severity | Count | Notes |
+|----------|----------|-------|-------|
+| `reentrancy-eth` | Critical | 0 | |
+| `arbitrary-send` | Critical | 0 | |
+| `unchecked-transfer` | Medium | 0 | |
+| Other | - | - | |
+
+### Automated Findings Summary
+> [List significant findings with [AUTO] tag, or "No critical automated findings"]
+
+---
+
+## 🛡️ Findings Summary
+
+| ID | Title | Severity | Status | Location |
+|----|-------|----------|--------|----------|
+| H-01 | [Example] Token ID Spoofing via Mapping Default | High | Confirmed | `Contract.sol:L123` |
+| M-01 | [Example] Missing Slippage Check | Medium | Confirmed | `Router.sol:L456` |
+
+---
+
+## 🔍 Detailed Findings
+
+*(Duplicate this section for each finding. DO NOT overwrite existing findings.)*
+
+---
+
+### [ID-XX] <Title of Vulnerability>
+
+**Severity:** 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low / ⚪ Info  
+**Location:** `FileName.sol` : `functionName()` : Lines X-Y  
+**Status:** Confirmed / Disputed / Fixed
+
+#### 🔴 Phase 2: Vulnerability Analysis
+
+**Vulnerability Type:** [e.g., Token ID Spoofing, Reentrancy, Access Control, Oracle Manipulation]
+
+**Root Cause:**
+> [Brief explanation of why this vulnerability exists]
+
+**Vulnerable Code:**
+```solidity
+// Vulnerable code snippet
+uint128 tokenId = poolToken[pool][userInput]; // Returns 0 for unregistered!
+```
+
+**Analysis Flow:**
+> [Which related functions were analyzed together, e.g., "Analyzed addPool() -> _stablePoolExchange() flow"]
+
+**Exploit Scenario:**
+1. Attacker calls `function()` with malicious input
+2. System returns default value 0
+3. Attacker gains unauthorized access to token ID 0
+
+**Impact:**
+> [What can an attacker achieve? What is the maximum loss?]
+
+#### ⚖️ Phase 3: Defense & Verification
+
+**Invariant Violated:**
+> `Only registered tokens should be swappable in a pool`
+
+**Feasibility Assessment:**
+- [ ] Exploitable with flash loan amplification
+- [ ] Requires specific market conditions
+- [ ] Economically viable after gas costs
+
+**Final Severity Justification:**
+| Factor | Assessment |
+|--------|------------|
+| Impact | High - Can drain pool |
+| Likelihood | High - No special conditions |
+| Complexity | Low - Single transaction |
+
+**Recommended Fix:**
+```solidity
+// Add existence check
+require(tokenExistsInPool[pool][path[i]], "TOKEN_NOT_REGISTERED");
+
+// Or use ID starting from 1, 0 = not found
+require(tokenIdIn > 0 && tokenIdOut > 0, "INVALID_TOKEN");
+```
+
+**Final Verdict:** ✅ Confirmed / ❌ Disputed / ⚠️ Acknowledged
+
+---
+
+## 📝 Recommendations
+
+### Critical Priority (Fix Before Deployment)
+1. [Recommendation 1]
+
+### High Priority
+1. [Recommendation 1]
+
+### Best Practices
+1. [General improvement suggestions]
+
+---
+
+## 📚 Appendix
+
+### A. Files Reviewed
+| File | Lines | Functions |
+|------|-------|-----------|
+| `Contract.sol` | 500 | 25 |
+
+### B. Tools Used
+- Slither v0.x.x
+- Foundry v0.x.x
+- Manual Review
+
+### C. Disclaimer
+This audit is not a guarantee of security. Smart contract security is an evolving field, and no audit can catch all possible vulnerabilities.
+
+---
+
+*Report generated by DeFi Smart Contract Audit Skill*
