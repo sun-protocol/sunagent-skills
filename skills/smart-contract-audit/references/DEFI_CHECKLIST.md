@@ -1,7 +1,9 @@
 # DeFi Protocol Audit Checklist
 
 > Comprehensive checklist organized by protocol type.
-> Check all applicable items during Phase 1 manual review.
+> **Primary Use:** Phase 3 (Vulnerability Discovery) - Step 3.3 DeFi-Specific Vulnerability Scan.
+> **Secondary Use:** Phase 1 (Automated Security Scan) - Manual pattern-based analysis if automated tools unavailable.
+> **Reference:** Use Phase 2 (Contract Understanding) function inventory and parameter semantics when checking these items.
 
 ---
 
@@ -50,9 +52,17 @@
 
 ### Swap Mechanics
 - [ ] Slippage protection enforced (`amountOutMin`)
+- [ ] **`amountOutMin` cannot be set to 0** (or has explicit warning)
+- [ ] **`amountInMax` enforced for exactOutput swaps**
 - [ ] Deadline parameter actually checked
 - [ ] Recipient address validated
 - [ ] Fee calculation correct and no overflow
+
+### Slippage Parameters
+- [ ] **Slippage controlled by user**, not hardcoded in contract
+- [ ] **Internal swap calls calculate slippage properly** (e.g., vault strategies calling DEX)
+- [ ] **Slippage calculation uses TWAP/oracle**, not manipulable spot price
+- [ ] Reasonable slippage bounds (not too tight causing DoS, not too loose allowing MEV)
 
 ### Price / Oracle
 - [ ] TWAP used instead of spot price (flash loan resistant)
@@ -65,6 +75,20 @@
 - [ ] No inflation attack on first deposit
 - [ ] Imbalanced liquidity adds handled properly
 - [ ] Remove liquidity doesn't leave dust
+
+### 💧 Concentration & Range Logic (Uniswap V3+ Pattern)
+- [ ] **Tick Initialization DoS**: Check if `mint` or `swap` can cause gas exhaustion by iterating through too many uninitialized ticks
+- [ ] **Liquidity Gross Overflow**: Ensure single tick's `liquidityGross` cannot exceed `uint128` max, preventing permanent pool lock
+- [ ] **In-range vs Out-of-range State**: Verify state updates (`feeGrowthGlobal`) and swap remaining amount calculations are correct when price crosses ticks
+- [ ] **Position boundary validation**: Ensure `tickLower < tickUpper` and both are multiples of `tickSpacing`
+- [ ] **Fee growth accounting**: Verify `feeGrowthInside` calculation handles tick crossing correctly
+
+### 🧩 Hook & Callback Security (V4 / Singleton Pattern)
+- [ ] **Hook Return Value Validation**: For V4-style hooks, strictly verify returned selector; incorrect returns may bypass pool logic
+- [ ] **Callback Origin Verification**: All `uniswapV3SwapCallback` or `lockAcquired` must verify `msg.sender` is expected Pool/Vault address
+- [ ] **No-Op Hook Detection**: Check if hooks can return 0 or no-op under certain conditions, allowing transactions to execute without intended restrictions
+- [ ] **Hook permission flags**: Verify hook address encodes correct permission bits (beforeSwap, afterSwap, etc.)
+- [ ] **Reentrancy through hooks**: Hooks may call back into pool; ensure state is consistent
 
 ---
 
@@ -130,14 +154,37 @@
 ### Multi-Protocol
 - [ ] Each external call validated
 - [ ] Return values from external protocols checked
-- [ ] Slippage across entire path
 - [ ] Deadline enforced through entire route
+
+### Slippage Protection
+- [ ] **Slippage across entire path enforced** (`amountOutMin` at final hop)
+- [ ] **Intermediate hop outputs validated** (not just final result)
+- [ ] **Cumulative slippage across n-hops considered**
+- [ ] **Quote vs execution deviation handled** (price may change between quote and swap)
+- [ ] **`amountOutMin` cannot be 0** for user-facing functions
+- [ ] Per-hop slippage or aggregated slippage strategy documented
 
 ### Funds Handling
 - [ ] Leftover tokens returned to user
 - [ ] Native currency (ETH/TRX) wrapped/unwrapped correctly
 - [ ] No stuck funds in router
 - [ ] Recipient address from caller, not parameter
+
+### 🌊 Liquidity Fragmentation & Dust
+- [ ] **Partial Fill Residue**: When aggregator splits across multiple paths, if one path fails (e.g., slippage), are remaining funds correctly refunded or rerouted?
+- [ ] **Sweep Enforcement**: Does router enforce `sweepToken`? Ensure no user assets remain in contract to be "picked up" by next caller
+- [ ] **Minimum output threshold**: Dust amounts below gas cost should be handled explicitly
+
+### ⚡ Flash Accounting & Transient Storage
+- [ ] **Transient Storage (EIP-1153) Reset**: If using `TSTORE`, ensure state is cleared at transaction end; uncleared state may cause next Permit2/Swap to misuse previous authorization
+- [ ] **Native Wrapping Consistency**: Ensure `WETH.deposit{value: amount}()` amount matches actual `msg.value`, preventing double-charge in Permit2 batch transactions
+- [ ] **Flash loan callback accounting**: Verify borrowed amounts are correctly tracked and repaid within same transaction
+
+### 🛡️ Call Injection & Permissions
+- [ ] **Arbitrary Call in Dispatcher**: Does aggregator's `execute` logic restrict `target` address? Prohibit user-supplied arbitrary contract calls to prevent draining router-approved tokens
+- [ ] **Permit2 Nonce Replay**: Verify router correctly handles nonce and deadline when calling Permit2
+- [ ] **Signature malleability**: Ensure permit signatures cannot be replayed or modified
+- [ ] **Approved token scope**: Router should only interact with explicitly approved tokens per transaction
 
 ---
 
@@ -173,18 +220,23 @@
 | Stale oracle | Works in tests | Check timestamp validation |
 | First depositor | Works with 1+ depositors | Test with empty vault |
 | Reentrancy | No obvious callback | Check ERC777, receive(), external calls |
+| `amountOutMin = 0` | User/contract sets 0 | Check if 0 slippage allowed → sandwich attack |
+| Hardcoded slippage | Works in stable market | Volatile market → DoS or excessive loss |
+| Spot price slippage | Works without flashloan | Flash loan manipulates spot → wrong slippage calc |
+| Multi-hop slippage | Final output looks ok | Intermediate hops manipulated, final passes |
 
 ---
 
-## ✅ Sign-Off Checklist
+## ✅ Phase 3 Completion Checklist
 
-Before marking audit complete:
+Before completing Phase 3 (Vulnerability Discovery):
 
 - [ ] All items above checked for applicable protocol type
-- [ ] Automated tools run and findings triaged
-- [ ] Each finding has severity and recommendation
-- [ ] Report reviewed for accuracy
-- [ ] Recommendations prioritized
+- [ ] Phase 2 function inventory referenced when analyzing vulnerabilities
+- [ ] Phase 2 parameter semantics used to identify validation gaps
+- [ ] Each finding explicitly references Phase 2 understanding
+- [ ] All findings documented in `.audit/blueprints/3_Vulnerability_Scan.md`
+- [ ] Findings ready for Phase 4 verification
 
 ---
 
