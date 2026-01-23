@@ -158,6 +158,7 @@
 
 ### Slippage Protection
 - [ ] **Slippage across entire path enforced** (`amountOutMin` at final hop)
+- [ ] **⚠️ UNIFIED FINAL CHECK**: After ALL execution paths complete (after routing loop), router MUST verify final output `amountsOut[last] >= amountOutMin` regardless of last pool type (V1/V2/V3/Stable). Do NOT rely solely on external protocol checks.
 - [ ] **Intermediate hop outputs validated** (not just final result)
 - [ ] **Cumulative slippage across n-hops considered**
 - [ ] **Quote vs execution deviation handled** (price may change between quote and swap)
@@ -224,6 +225,7 @@
 | Hardcoded slippage | Works in stable market | Volatile market → DoS or excessive loss |
 | Spot price slippage | Works without flashloan | Flash loan manipulates spot → wrong slippage calc |
 | Multi-hop slippage | Final output looks ok | Intermediate hops manipulated, final passes |
+| Multi-protocol final check | Only last pool checks | Router must verify final output after ALL paths, regardless of pool type |
 
 ---
 

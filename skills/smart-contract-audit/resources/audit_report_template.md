@@ -34,10 +34,7 @@
 | Informational | 0 |
 
 **Key Findings Summary:**
-> [1-2 paragraph summary of the most critical and high-severity findings from Phase 3 & 4. Focus on vulnerabilities that pose the greatest risk to users and protocol.]
-
-**Audit Methodology:**
-> This audit was conducted using the DeFi Smart Contract Audit Skill v2.8.0 methodology, which includes a mandatory Phase 2: Contract Understanding stage. This phase ensures deep comprehension of contract architecture, function purposes, parameter semantics, and data flows before vulnerability discovery, resulting in more thorough and systematic findings.
+> [1-2 paragraph summary of the most critical and high-severity findings. Focus on vulnerabilities that pose the greatest risk to users and protocol.]
 
 ---
 
@@ -73,18 +70,10 @@
 
 **Severity:** 🔴 Critical  
 **Location:** `FileName.sol` : `functionName()` : Lines X-Y  
-**Status:** Confirmed / Disputed / Mitigated
+**Status:** Confirmed
 
-#### Vulnerability Analysis (Phase 3)
-
-**Vulnerability Type:** [Select from categories below]
-- *Classic:* Reentrancy, Access Control, Oracle Manipulation, Token ID Spoofing, Unchecked Return, Precision Loss
-- *DeFi-Specific:* First Depositor Attack, Slippage Bypass, Deadline Bypass, Fee-on-Transfer Handling
-- *Modern (V4/EIP-1153):* Transient Storage Collision, Hook DoS, Hook Return Validation, Callback Origin Spoofing
-- *Router/Aggregator:* Multicall msg.value Reuse, Permit2 Exploitation, Arbitrary Call Injection, Sweep/Dust Residue
-
-**Root Cause:**
-> [Brief explanation of why this vulnerability exists. Reference Phase 2 understanding if applicable, e.g., "Based on Phase 2 parameter semantics analysis, the function assumes X but never validates Y"]
+**Description:**
+> [Clear, concise description of the vulnerability and its root cause]
 
 **Vulnerable Code:**
 ```solidity
@@ -92,8 +81,8 @@
 uint128 tokenId = poolToken[pool][userInput]; // Returns 0 for unregistered!
 ```
 
-**Analysis Flow:**
-> [Which related functions were analyzed together, e.g., "Analyzed addPool() -> _stablePoolExchange() flow based on Phase 2 function dependency graph"]
+**Impact:**
+> [What can an attacker achieve? Maximum extractable value, affected users, protocol impact]
 
 **Exploit Scenario:**
 1. Attacker calls `function()` with malicious input
@@ -101,31 +90,7 @@ uint128 tokenId = poolToken[pool][userInput]; // Returns 0 for unregistered!
 3. Attacker gains unauthorized access to token ID 0
 4. [Additional steps]
 
-**Impact:**
-> [What can an attacker achieve? What is the maximum loss?]
-
-#### Defense & Verification (Phase 4)
-
-**Invariant Violated:**
-> `Only registered tokens should be swappable in a pool`
-
-**Feasibility Assessment:**
-- [ ] Exploitable with flash loan amplification
-- [ ] Requires specific market conditions
-- [ ] Economically viable after gas costs
-- [ ] Maximum extractable value: [amount]
-- [ ] Exploitable via MEV (sandwich/frontrun)
-- [ ] Requires multi-transaction setup
-- [ ] Exploitable in single atomic transaction
-
-**Final Severity Justification:**
-| Factor | Assessment |
-|--------|------------|
-| Impact | High - Can drain pool |
-| Likelihood | High - No special conditions |
-| Complexity | Low - Single transaction |
-
-**Recommended Fix:**
+**Recommendation:**
 ```solidity
 // Add existence check
 require(tokenExistsInPool[pool][path[i]], "TOKEN_NOT_REGISTERED");
@@ -134,17 +99,22 @@ require(tokenExistsInPool[pool][path[i]], "TOKEN_NOT_REGISTERED");
 require(tokenIdIn > 0 && tokenIdOut > 0, "INVALID_TOKEN");
 ```
 
-**Final Verdict:** ✅ Confirmed / ❌ Disputed / ⚠️ Acknowledged
-
 ---
 
 ### [H-01] <Title of Vulnerability>
 
 **Severity:** 🟠 High  
 **Location:** `FileName.sol` : `functionName()` : Lines X-Y  
-**Status:** Confirmed / Disputed / Mitigated
+**Status:** Confirmed
 
-[Same structure as above]
+**Description:**
+> [Clear, concise description of the vulnerability]
+
+**Impact:**
+> [Impact assessment]
+
+**Recommendation:**
+> [Recommended fix or mitigation]
 
 ---
 
@@ -152,9 +122,16 @@ require(tokenIdIn > 0 && tokenIdOut > 0, "INVALID_TOKEN");
 
 **Severity:** 🟡 Medium  
 **Location:** `FileName.sol` : `functionName()` : Lines X-Y  
-**Status:** Confirmed / Disputed / Mitigated
+**Status:** Confirmed
 
-[Same structure as above]
+**Description:**
+> [Clear, concise description of the vulnerability]
+
+**Impact:**
+> [Impact assessment]
+
+**Recommendation:**
+> [Recommended fix or mitigation]
 
 ---
 
@@ -162,9 +139,13 @@ require(tokenIdIn > 0 && tokenIdOut > 0, "INVALID_TOKEN");
 
 **Severity:** 🟢 Low  
 **Location:** `FileName.sol` : `functionName()` : Lines X-Y  
-**Status:** Confirmed / Disputed / Mitigated
+**Status:** Confirmed
 
-[Same structure as above]
+**Description:**
+> [Clear, concise description of the issue]
+
+**Recommendation:**
+> [Recommended fix or improvement]
 
 ---
 
@@ -174,77 +155,80 @@ require(tokenIdIn > 0 && tokenIdOut > 0, "INVALID_TOKEN");
 **Location:** `FileName.sol` : `functionName()` : Lines X-Y  
 **Status:** Acknowledged
 
-[Brief description]
+**Description:**
+> [Brief description of informational finding]
 
 ---
 
 ## 📝 Recommendations
 
 ### 🔴 Critical Priority (Fix Before Deployment)
-1. **[C-01]**: [Recommendation based on Phase 4 impact assessment]
-2. **[C-02]**: [Recommendation]
+1. **[C-01]**: [Brief recommendation]
+2. **[C-02]**: [Brief recommendation]
 
 ### 🟠 High Priority (Fix Before Production)
-1. **[H-01]**: [Recommendation]
-2. **[H-02]**: [Recommendation]
+1. **[H-01]**: [Brief recommendation]
+2. **[H-02]**: [Brief recommendation]
 
 ### 🟡 Medium Priority (Fix Before Significant TVL)
-1. **[M-01]**: [Recommendation]
-2. **[M-02]**: [Recommendation]
+1. **[M-01]**: [Brief recommendation]
+2. **[M-02]**: [Brief recommendation]
 
 ### 🟢 Low Priority (Fix During Maintenance)
-1. **[L-01]**: [Recommendation]
-2. **[L-02]**: [Recommendation]
-
-### Best Practices
-1. [General improvement suggestions]
-2. [Code quality improvements]
-
-### Modern DeFi Considerations (if applicable)
-- **EIP-1153 (Transient Storage):** Ensure all `tstore` calls have corresponding cleanup in all exit paths
-- **Uniswap V4 Hooks:** Verify hook return values, validate callback origins, bound gas consumption
-- **Router/Aggregator:** Whitelist call targets, track msg.value per call in multicall, enforce user-provided deadlines
-- **Permit2 Integration:** Restrict execute targets, prevent arbitrary calls to Permit2 contract
+1. **[L-01]**: [Brief recommendation]
+2. **[L-02]**: [Brief recommendation]
 
 ---
 
 ## 📚 Appendix
 
-### A. Files Reviewed
+### A. Verification Results
+
+#### DEFI_CHECKLIST.md Verification
+
+**Protocol Type:** [DEX/AMM | Lending | Vault | Router | Staking]
+
+| Section | Items Checked | Pass | Fail | Notes |
+|---------|---------------|------|------|-------|
+| Universal Checks | [N] | [N] | [N] | [Brief notes] |
+| DEX/AMM Specific | [N] | [N] | [N] | [Brief notes] |
+| [Other sections] | [N] | [N] | [N] | [Brief notes] |
+
+**Summary:** [Brief summary of checklist verification - keep concise]
+
+#### VULNERABILITY_PATTERNS.md Verification
+
+| Pattern Category | Patterns Checked | Violations Found | Notes |
+|-----------------|------------------|------------------|-------|
+| Critical (#1-4) | 4 | [N] | [Brief notes] |
+| High (#5-7) | 3 | [N] | [Brief notes] |
+| Medium (#8-12) | 5 | [N] | [Brief notes] |
+| Modern DeFi (#19-23) | 5 | [N] | [Brief notes] |
+| [Other categories] | [N] | [N] | [Brief notes] |
+
+**Summary:** [Brief summary of pattern verification - keep concise]
+
+### B. Files Reviewed
 
 | File | Lines | Description |
 |------|-------|-------------|
 | `Contract.sol` | 500 | Main contract |
 | `Helper.sol` | 100 | Helper library |
 
-### B. Methodology
+### C. Methodology
 
-This audit was conducted using the DeFi Smart Contract Audit Skill v2.8.0 methodology:
+This audit was conducted using a comprehensive multi-phase methodology:
 
-1. **Phase 0:** Architecture review, protocol classification, documentation check
-2. **Phase 1:** Pre-audit checklist, automated scan patterns (manual review)
-3. **Phase 2:** Contract Understanding (MANDATORY):
-   - Complete function inventory with parameter semantics
-   - Data flow analysis
-   - Function dependency mapping
-   - Parameter validation gap analysis
-   - Cross-function consistency check
-4. **Phase 3:** Vulnerability Discovery:
-   - Storage layout analysis
-   - Flow-based function analysis (guided by Phase 2 understanding)
-   - DeFi-specific vulnerability checklist (`references/DEFI_CHECKLIST.md`)
-   - Solidity & Advanced vulnerability patterns (`references/VULNERABILITY_PATTERNS.md`)
-   - **Modern DeFi patterns:** V3+/V4 (Hooks, Concentrated Liquidity), EIP-1153, Router/Aggregator
-5. **Phase 4:** Invariant-based verification, impact assessment, severity classification
+1. **Architecture Review:** Protocol classification, contract structure analysis
+2. **Contract Understanding:** Deep analysis of function purposes, data flows, and parameter semantics
+3. **Vulnerability Discovery:** Systematic analysis using function-based and flow-based approaches, referencing comprehensive DeFi vulnerability checklists and patterns
+4. **Verification & Impact Assessment:** Logic verification, impact assessment, and severity classification
 
-> **Detailed phase results are available in `.audit/blueprints/` directory:**
-> - `0_Setup.md` - Architecture and protocol classification
-> - `1_Automated_Security_Scan.md` - Automated scan results
-> - `2_Understanding.md` - Complete contract understanding (function inventory, data flows, parameter semantics)
-> - `3_Vulnerability_Scan.md` - All vulnerability findings
-> - `4_Defense_Verification.md` - Verification and impact assessment
+The audit covers modern DeFi patterns including Uniswap V3+/V4 (Hooks, Concentrated Liquidity), EIP-1153 (Transient Storage), and Router/Aggregator vulnerabilities (Permit2, Multicall).
 
-### C. Vulnerability Classification
+> **Detailed analysis results are available in `.audit/blueprints/` directory**
+
+### D. Vulnerability Classification
 
 | Severity | Impact | Likelihood | Examples |
 |----------|--------|------------|----------|
@@ -254,7 +238,7 @@ This audit was conducted using the DeFi Smart Contract Audit Skill v2.8.0 method
 | **Low** | Minor issues, unlikely exploitation | Low | Missing events, naming conventions, gas optimizations, hardcoded slippage tolerance |
 | **Informational** | Best practices, no security impact | N/A | Code quality, documentation gaps, unused variables |
 
-### D. Disclaimer
+### E. Disclaimer
 
 This audit represents a point-in-time assessment based on the code reviewed. It does not guarantee the absence of vulnerabilities. Smart contract security is an evolving field, and new attack vectors may be discovered. This audit does not cover:
 
