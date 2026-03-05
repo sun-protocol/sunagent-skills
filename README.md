@@ -27,6 +27,17 @@ Each skill typically contains:
     - **Test Fixture Generation**: Automatically creates Foundry test bases for PoC development.
     - **Invariant Verification**: Uses mathematical invariants to validate or refute findings.
 
+### 2. [Sun Frontend Engineering Workflow](./sun-frontend)
+**Description**: A structured engineering workflow skill for React + TypeScript frontend development, enabling AI agents and developers to execute tasks with standardized planning, development governance, self-testing, and risk assessment.
+
+- **Version**: 1.0.0
+- **Key Features**:
+    - **3-Phase Engineering Workflow**: Planning → Development → Self-Test to ensure structured frontend task execution.
+    - **React + TypeScript Governance**: Enforces engineering best practices including component architecture, hooks rules, state management discipline, and API/UI separation.
+    - **Scenario-Based Self Testing**: Uses a scenario matrix to simulate QA flows, covering edge cases, negative cases, and state transitions.
+    - **Structured Risk Assessment**: Integrates a PR Gate review process with standardized risk levels (Low / Medium / High).
+    - **Engineering Documentation Templates**: Includes technical planning, self-test report, and PR Gate review templates for traceable engineering processes.
+
 ## 🚀 How to Use
 
 ### For Agentic IDEs (Antigravity, Cursor etc.)
