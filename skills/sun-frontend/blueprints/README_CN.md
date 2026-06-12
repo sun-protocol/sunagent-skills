@@ -1,21 +1,16 @@
 # Blueprints 目录说明
 
-本目录用于存放每次需求的四阶段治理输出文件。
+Blueprints 已从默认强制产物降级为可选产物。
 
-目录结构建议：
+默认情况下，每次需求只产出一份：
 
-blueprints/
-└── YYYY-MM-需求名称/
-    ├── 1_Technical_Planning.md
-    ├── 2_Development_Design.md
-    ├── 3_Self_Test_Report.md
-    └── 4_PR_Gate_Report.md
+`AuditReport.md`
 
 说明：
 
-- 每个需求独立一个文件夹
-- 不覆盖历史
-- 作为 AI 治理审计记录
-- 可用于 PR Review / 事故复盘 / 架构演进回溯
+- 不再强制创建 `blueprints/YYYY-MM-需求名称/`
+- 不再强制输出四阶段文件
+- Planning / Development / Self-Test / PR Gate 作为内部分析阶段保留
+- 只有用户明确要求完整治理记录时，才创建 Blueprint 目录
 
-本目录属于动态产出目录，不可存放规范文件。
+本目录仅用于保留历史治理产物或承载用户明确要求的完整阶段文件。

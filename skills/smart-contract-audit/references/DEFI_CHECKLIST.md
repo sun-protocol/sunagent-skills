@@ -234,10 +234,10 @@
 Before completing Phase 3 (Vulnerability Discovery):
 
 - [ ] All items above checked for applicable protocol type
-- [ ] Phase 2 function inventory referenced when analyzing vulnerabilities
-- [ ] Phase 2 parameter semantics used to identify validation gaps
-- [ ] Each finding explicitly references Phase 2 understanding
-- [ ] All findings documented in `.audit/blueprints/3_Vulnerability_Scan.md`
+- [ ] Internal function inventory referenced when analyzing vulnerabilities
+- [ ] Parameter semantics used to identify validation gaps
+- [ ] Each finding is backed by code evidence and audit understanding
+- [ ] Confirmed findings are ready for the final `.audit/Audit-Report.md`
 - [ ] Findings ready for Phase 4 verification
 
 ---
