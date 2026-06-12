@@ -10,7 +10,7 @@
 
 - 核心理念
 - 治理流程
-- Blueprint 目录规则
+- AuditReport 输出规则
 - 阶段说明
 - 输出文件结构
 - 风险模型
@@ -73,25 +73,20 @@ Phase 1（Technical Planning）是强制阶段。
 
 ---
 
-## 3. 文件化工作流（强制）
+## 3. 单一审计报告工作流（强制）
 
-每个阶段必须：
+每个阶段必须完成内部分析，但默认只输出一份最终报告：
 
-- 独立输出完整文档
-- 明确输入与输出
-- 不允许跨阶段合并输出
+- `AuditReport.md`
+- 阶段分析用于形成最终判断
+- 不强制输出阶段文档
+- 不创建 Blueprint 目录，除非用户明确要求
 
-### 标准目录结构
+### 标准输出结构
 
 ```
 sun-frontend/
-├── blueprints/
-│   └── YYYY-MM-模块名/
-│       ├── 1_Technical_Planning.md
-│       ├── 2_Development_Design.md
-│       ├── 3_Self_Test_Report.md
-│       └── 4_PR_Gate_Report.md
-└── Final-Delivery-Summary.md
+└── AuditReport.md
 ```
 
 ---
@@ -134,98 +129,58 @@ Phase 1 技术方案（强制）
 → Phase 2 开发设计  
 → Phase 3 自测验证  
 → Phase 4 PR Gate 审核  
-→ Final 交付总结  
+→ AuditReport 最终审计报告  
 
 ---
 
-# 📁 Blueprint 目录创建规则（强制执行）
+# 📁 AuditReport 输出规则（强制执行）
 
-为保证需求可追溯性与治理一致性，每一个新需求必须创建独立 Blueprint 子目录。
+为降低 AI Token 消耗，每一个新需求默认只产出一份最终审计报告。
 
 ---
 
 ## 一、创建时机
 
-当进入 Phase 1 之前必须：
+完成开发与验证后生成：
 
-- 检查是否存在本次需求对应目录
-- 若不存在 → 创建目录
-- 若存在 → 禁止覆盖历史内容
+`AuditReport.md`
 
 ---
 
-## 二、命名规范
+## 二、报告内容
 
-统一格式：
+必须包含：
 
-```
-YYYY-MM-模块名
-```
-
-示例：
-
-```
-2026-03-OrderModule
-2026-03-UserCenter
-2026-04-CheckoutFlow
-```
+- 需求摘要
+- 改动摘要
+- 影响范围
+- 状态 / API / 组件影响
+- 风险等级与理由
+- 阻塞问题
+- 验证结果
+- 后续建议
+- 阶段状态
 
 ---
 
-## 三、同月多次迭代
+## 三、治理约束
 
-```
-YYYY-MM-模块名-v2
-YYYY-MM-模块名-v3
-```
-
-示例：
-
-```
-2026-03-OrderModule-v2
-```
+1. Planning / Development / Self-Test / PR Gate 仍然作为内部阶段执行  
+2. 默认不输出四阶段长文档  
+3. 默认不创建 Blueprint 目录  
+4. 只有用户明确要求完整治理记录时，才启用 Blueprint 输出  
 
 ---
 
-## 四、目录内部标准结构
-
-每个需求目录必须包含：
-
-```
-1_Technical_Planning.md
-2_Development_Design.md
-3_Self_Test_Report.md
-4_PR_Gate_Report.md
-```
-
-复杂需求可扩展：
-
-```
-api_contract.md
-state_design.md
-deployment_plan.md
-```
-
----
-
-## 五、治理约束
-
-1. 禁止多个需求共用一个目录  
-2. 禁止覆盖历史 Blueprint 文件  
-3. 每个 PR 必须对应一个 Blueprint 目录  
-4. Blueprint 目录作为治理审计依据，不可删除  
-
----
-
-## 六、AI 执行责任
+## 四、AI 执行责任
 
 当触发新需求时，必须：
 
-- 自动生成符合规范的目录名
-- 输出完整四阶段文件结构
-- 按阶段分别产出文档
+- 完成必要的内部阶段分析
+- 将关键判断压缩到 `AuditReport.md`
+- 省略完整场景矩阵、完整组件树、重复检查清单
 
-否则视为流程未完成。
+否则视为输出过度。
 
 ---
 
@@ -261,7 +216,7 @@ deployment_plan.md
 
 ## 输出
 
-`blueprints/YYYY-MM-模块名/1_Technical_Planning.md`
+关键结论写入 `AuditReport.md`，不单独输出 Phase 1 文件。
 
 ---
 
@@ -298,7 +253,7 @@ deployment_plan.md
 
 ## 输出
 
-`blueprints/YYYY-MM-模块名/2_Development_Design.md`
+关键实现决策写入 `AuditReport.md`，不单独输出 Phase 2 文件。
 
 ---
 
@@ -331,7 +286,7 @@ deployment_plan.md
 
 ## 输出
 
-`blueprints/YYYY-MM-模块名/3_Self_Test_Report.md`
+验证摘要写入 `AuditReport.md`，不单独输出 Phase 3 文件。
 
 ---
 
@@ -362,24 +317,26 @@ deployment_plan.md
 
 ## 输出
 
-`blueprints/YYYY-MM-模块名/4_PR_Gate_Report.md`
+PR Gate 结论写入 `AuditReport.md`，不单独输出 Phase 4 文件。
 
 ---
 
-# 📤 最终交付总结
+# 📤 最终 AuditReport
 
 必须包含：
 
 - 本次需求摘要
+- 改动摘要
 - 复杂度等级
 - 风险等级
 - 主要变更点
 - 影响范围
+- 验证结果
 - 回归建议
 
 输出：
 
-`Final-Delivery-Summary.md`
+`AuditReport.md`
 
 ---
 
@@ -403,9 +360,10 @@ deployment_plan.md
 
 | 资源 | 路径 | 用途 |
 |------|------|------|
-| 技术方案模板 | resource/technical_plan_template.md | Phase 1 使用 |
-| 自测报告模板 | resource/self_test_report_template.md | Phase 3 使用 |
-| PR Gate 模板 | resource/pr_gate_output_template.md | Phase 4 使用 |
+| 技术方案模板 | resources/technical_plan_template.md | Phase 1 使用 |
+| 自测报告模板 | resources/self_test_report_template.md | Phase 3 使用 |
+| PR Gate 模板 | resources/pr_gate_output_template.md | Phase 4 使用 |
+| AuditReport 模板 | resources/audit_report_template.md | 默认最终产物 |
 | React TS 治理规范 | references/react_ts_governance.md | 规范基线 |
 | 风险等级定义 | references/risk_level_definition.md | 风险模型 |
 | 场景矩阵指南 | references/scenario_matrix_guide.md | 自测矩阵 |
@@ -416,21 +374,20 @@ deployment_plan.md
 
 ## 执行顺序（必须）
 
-1. 创建 Blueprint 目录  
-2. 完成 Phase 1 并输出  
-3. 完成 Phase 2 并输出  
-4. 完成 Phase 3 并输出  
-5. 完成 Phase 4 并输出  
-6. 生成最终总结  
+1. 完成 Phase 1 内部技术方案  
+2. 完成 Phase 2 开发设计与实现  
+3. 完成 Phase 3 自测验证  
+4. 完成 Phase 4 PR Gate 审核  
+5. 生成 `AuditReport.md`  
 
 ---
 
 ## DO
 
 - 一个阶段完全完成再进入下一个
-- 每个阶段独立输出
-- 每阶段重新分析代码
-- 使用模板文件
+- 只输出最终 AuditReport
+- 只重新分析受影响代码
+- 使用 AuditReport 模板收敛结论
 
 ---
 
@@ -438,7 +395,7 @@ deployment_plan.md
 
 - 不允许跳过 Phase 1
 - 不允许直接写代码
-- 不允许合并多个阶段输出
+- 不允许输出完整阶段文档，除非用户明确要求
 - 不允许忽略风险等级评估
 
 ---
@@ -448,7 +405,7 @@ deployment_plan.md
 添加新的技术栈支持，修改：
 
 - `references/react_ts_governance.md`
-- `resource/technical_plan_template.md`
+- `resources/technical_plan_template.md`
 
 增强风险模型，修改：
 
@@ -473,13 +430,20 @@ deployment_plan.md
 
 ---
 
-## 为什么必须文件化？
+## 为什么默认只输出 AuditReport？
 
 避免：
 
-- 上下文丢失
-- 阶段混乱
-- 难以追溯
+- 多阶段文档造成 output token 过高
+- 后续阶段重复读取长篇中间产物
+- 小需求被流程成本压垮
+
+保留：
+
+- 阶段判断
+- 风险结论
+- 验证证据
+- 可追溯的最终摘要
 
 ---
 
@@ -502,10 +466,9 @@ deployment_plan.md
 
 - 强制技术方案
 - 双层分析模型
-- Blueprint 目录治理
-- 文件化工作流
+- 单一 AuditReport 输出
 - 风险等级控制
-- 标准化输出
+- 精简标准化输出
 
 目标不是生成代码。  
 目标是：

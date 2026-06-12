@@ -91,7 +91,8 @@ Purpose: Standard template for Phase 1 Technical Planning in React + TypeScript 
 
 # 10. Output & Review
 
-- Save to: `/sun-frontend/blueprints/1_Technical_Planning.md`  
+- Summarize only the relevant decisions in `AuditReport.md`.
+- Do not save a standalone planning file unless explicitly requested.
 - Review Checklist:  
   - All pages/components mapped?  
   - State flow documented?  
@@ -104,6 +105,6 @@ Purpose: Standard template for Phase 1 Technical Planning in React + TypeScript 
 
 # 11. Notes
 
-- This template is mandatory for Phase 1.  
-- Must be completed **before** Phase 2 development design begins.  
-- Any deviation requires approval from governance lead.
+- This template is a reference for internal Phase 1 reasoning.
+- Must be completed internally before Phase 2 development design begins when risk is Medium or High.
+- The final user-visible artifact is `AuditReport.md` by default.

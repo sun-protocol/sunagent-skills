@@ -2,7 +2,7 @@
 
 Frontend Engineering Execution Workflow Engine
 
-This skill governs structured frontend task execution across three controlled phases.
+This skill governs structured frontend task execution with internal phase reasoning and a single final AuditReport output.
 
 ---
 
@@ -23,13 +23,25 @@ If no phase is provided, ask user to specify.
 
 ---
 
+# Output Policy
+
+Only produce one final report artifact by default:
+
+`AuditReport.md`
+
+Planning, development design, self-test, and PR gate analysis must be performed as internal working notes unless the user explicitly asks for phase documents.
+
+Do not create Blueprint directories or full per-phase files by default.
+
+---
+
 # Phase 1: Planning
 
 ## Objective
 
 Generate structured frontend technical solution.
 
-## Output Structure (Mandatory if strict=on)
+## Internal Analysis Structure (Mandatory if strict=on)
 
 1. Requirement Overview
 2. Functional Module Decomposition
@@ -42,11 +54,11 @@ Generate structured frontend technical solution.
 
 ## Rules
 
-- Must be structured.
+- Must be structured internally.
 - Must define data contracts clearly.
 - Must analyze state transitions.
 - Must identify performance and memory risks.
-- May be skipped, but status must record as Skipped.
+- May be skipped only for trivial tasks, but status must record as Skipped in AuditReport.
 
 ---
 
@@ -159,7 +171,7 @@ Check:
 
 ## Step 4: PR Gate Decision
 
-Output format:
+AuditReport format:
 
 Self-Test Result: PASS | PASS_WITH_RISK | BLOCK
 
@@ -176,6 +188,24 @@ If BLOCK → recommend no PR merge.
 
 ---
 
+# AuditReport Requirements
+
+The final `AuditReport.md` must include:
+
+1. Requirement Summary
+2. Change Summary
+3. Impacted Files / Modules
+4. State / API / Component Impact
+5. Risk Level and Rationale
+6. Blocking Issues, if any
+7. Verification Summary
+8. Recommendations / Follow-up
+9. Phase Status Tracker
+
+Keep the report concise. Omit full scenario matrices, full component trees, and repeated checklist detail unless they are needed to explain a concrete risk.
+
+---
+
 # Phase Status Tracker
 
 Maintain:
@@ -183,6 +213,7 @@ Maintain:
 Planning: Done / Skipped  
 Development: Done  
 Self-Test: Done / Blocked  
+PR Gate: Done / Blocked
 
 ---
 
@@ -199,6 +230,7 @@ Self-Test: Done / Blocked
 - resources/technical_plan_template.md
 - resources/self_test_report_template.md
 - resources/pr_gate_output_template.md
+- resources/audit_report_template.md
 
 ---
 
@@ -208,7 +240,7 @@ Self-Test: Done / Blocked
 - Never introduce unsafe modifications.
 - Never produce large unreviewable diffs.
 - Always prioritize correctness over speed.
-- Always output structured results in planning and self-test phases.
+- Always output one concise final AuditReport unless phase-specific documents are explicitly requested.
 
 ---
 

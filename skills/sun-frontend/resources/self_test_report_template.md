@@ -73,13 +73,13 @@ Purpose: Standard template for Phase 3 Self-Test verification in React + TypeScr
 
 # 8. Output & Storage
 
-- Save to: `/sun-frontend/blueprints/3_Self_Test_Report.md`  
-- Must be independently completed per Phase 3 requirements.  
+- Summarize verification evidence in `AuditReport.md`.
+- Do not save a standalone self-test report unless explicitly requested.
 
 ---
 
 # 9. Notes
 
-- Self-Test Report is mandatory for QA simulation before PR Gate review.  
+- Self-test reasoning is mandatory for QA simulation before PR Gate review.  
 - Must reference scenario matrix guide to ensure coverage of all critical flows.  
-- All Pass / Fail results must be clearly documented with evidence or screenshots if needed.
+- Pass / Fail results should be documented only when they affect risk, blocking status, or follow-up.

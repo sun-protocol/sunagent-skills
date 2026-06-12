@@ -63,13 +63,13 @@ Purpose: Standard template for Phase 4 PR Gate review in React + TypeScript fron
 
 # 7. Output & Storage
 
-- Save to: `/sun-frontend/blueprints/4_PR_Gate_Report.md`  
-- Must be independently completed per Phase 4 requirements.  
+- Summarize PR Gate decision in `AuditReport.md`.
+- Do not save a standalone PR Gate report unless explicitly requested.
 
 ---
 
 # 8. Notes
 
-- PR Gate Template ensures structured review and risk assessment before merge.  
+- PR Gate reasoning ensures structured review and risk assessment before merge.  
 - Must include both code-level and design-level risks.  
-- All assessments must be traceable and reference prior Self-Test results.
+- Assessments must remain traceable through the final AuditReport.
